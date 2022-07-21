@@ -66,3 +66,4 @@ def sendJesseReportToDiscord(webhookUrl: str):
             with open(path, "rb") as f: webhook.add_file(file=f.read(), filename=file_name + '.' + types)
 
         response = webhook.execute()
+        plt.close()
