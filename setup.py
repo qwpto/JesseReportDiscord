@@ -71,7 +71,7 @@ setup(
     author="qwpto",  # Optional
     # This should be a valid email address corresponding to the author listed
     # above.
-    author_email="author@example.com",  # Optional
+    author_email="109690977+qwpto@users.noreply.github.com",  # Optional
     # Classifiers help users find your project by categorizing it.
     #
     # For a list of valid classifiers, see https://pypi.org/classifiers/
