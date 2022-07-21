@@ -4,7 +4,7 @@
 
 import unittest
 
-from jesse-report-discord import sendJesseReportToDiscord
+# from jesse-report-discord import sendJesseReportToDiscord
 
 
 class TestSimple(unittest.TestCase):

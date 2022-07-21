@@ -8,7 +8,6 @@ from jesse.services import report
 from jesse.routes import router
 from datetime import datetime, timedelta
 from jesse.store import store
-from jesse.routes import router
 import jesse.services.metrics as stats
 import git
 

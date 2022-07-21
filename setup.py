@@ -143,7 +143,7 @@ setup(
     # If there are data files included in your packages that need to be
     # installed, specify them here.
     # package_data={  # Optional
-        # "sample": ["package_data.dat"],
+    #    # "sample": ["package_data.dat"],
     # },
     # Although 'package_data' is the preferred approach, in some case you may
     # need to place data files outside of your packages. See:
@@ -159,9 +159,9 @@ setup(
     # For example, the following would provide a command called `sample` which
     # executes the function `main` from this package when invoked:
     # entry_points={  # Optional
-        # "console_scripts": [
-            # "sample=sample:main",
-        # ],
+    #    # "console_scripts": [
+    #        # "sample=sample:main",
+    #    # ],
     # },
     # List additional URLs that are relevant to your project as a dict.
     #
