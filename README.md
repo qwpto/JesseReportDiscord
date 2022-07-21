@@ -2,9 +2,12 @@
 
 Post the results of backtests to a discord channel using a webhook
 
+install with:
+	pip install JesseReportDiscord
+
 Add the following to your strategy:
 
-	from JesseReportDiscord import sendJesseReportToDiscord
+	import JesseReportDiscord
 	 
 		def terminate(self):
-			sendJesseReportToDiscord('http://mydiscordgeneratedwebhook')
+			JesseReportDiscord.sendJesseReportToDiscord('http://mydiscordgeneratedwebhook')

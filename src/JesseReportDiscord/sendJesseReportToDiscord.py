@@ -13,6 +13,8 @@ import git
 
 import pandas as pd
 
+from matplotlib import pyplot as plt
+
 # from jesse.strategies import Strategy
 
 
@@ -25,6 +27,7 @@ def sendJesseReportToDiscord(webhookUrl: str):
         file_name = jh.get_session_id()
         studyname = backtest_mode._get_study_name()
         chartOverview = charts.portfolio_vs_asset_returns(studyname)
+        plt.close()
 
         start_date = datetime.fromtimestamp(store.app.starting_time / 1000)
         date_list = [start_date + timedelta(days=x) for x in range(len(store.app.daily_balance))]
