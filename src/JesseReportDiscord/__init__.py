@@ -1,1 +1,1 @@
-import sendJesseReportToDiscord
+from .sendJesseReportToDiscord import sendJesseReportToDiscord
