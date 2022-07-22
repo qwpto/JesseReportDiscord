@@ -45,12 +45,18 @@ def sendJesseReportToDiscord(webhookUrl: str):
 
         hp = stats.hyperparameters(router.routes)
         for item in hp:
-            messageContent += ("{:<1} \t{:<1}\n".format(item[0], item[1]))
+            if(type(item[1]) == float):
+                messageContent += ("{:<1} \t{:.7g}\n".format(item[0], item[1]))            
+            else:
+                messageContent += ("{:<1} \t{:<1}\n".format(item[0], item[1]))
 
         messageContent += "\n"
 
         for key, value in report.portfolio_metrics().items():
-            messageContent += ("{:<1} \t{:<1}\n".format(key, value))
+            if(type(value) == float):
+                messageContent += ("{:<1} \t{:.7g}\n".format(key, value))
+            else:
+                messageContent += ("{:<1} \t{:<1}\n".format(key, value))
 
         # update csv to readable date:
         df = pd.read_csv(logs_path['csv'])
