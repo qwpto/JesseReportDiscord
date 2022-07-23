@@ -45,24 +45,30 @@ def sendJesseReportToDiscord(webhookUrl: str):
 
         hp = stats.hyperparameters(router.routes)
         for item in hp:
-            if(type(item[1]) == float):
-                messageContent += ("{:<1} \t{:.7g}\n".format(item[0], item[1]))            
-            else:
-                messageContent += ("{:<1} \t{:<1}\n".format(item[0], item[1]))
+            # if(type(item[1]) == float):
+            #   messageContent += ("{:<1} \t{:.7g}\n".format(item[0], item[1]))            
+            # else:
+            messageContent += ("{:<1} \t{:<1}\n".format(item[0], item[1]))
 
         messageContent += "\n"
 
         for key, value in report.portfolio_metrics().items():
-            if(type(value) == float):
-                messageContent += ("{:<1} \t{:.7g}\n".format(key, value))
-            else:
-                messageContent += ("{:<1} \t{:<1}\n".format(key, value))
+            # if(type(value) == float):
+            #    messageContent += ("{:<1} \t{:.7g}\n".format(key, value))
+            # else:
+            messageContent += ("{:<1} \t{:<1}\n".format(key, value))
 
         # update csv to readable date:
         df = pd.read_csv(logs_path['csv'])
         df['opened_at'] = df["opened_at"].apply(lambda t: datetime.utcfromtimestamp(t / 1000).strftime('%Y-%m-%d %H:%M:%S'))
         df['closed_at'] = df["closed_at"].apply(lambda t: datetime.utcfromtimestamp(t / 1000).strftime('%Y-%m-%d %H:%M:%S'))
         df.to_csv(logs_path['csv'], index=False)
+
+        while(len(messageContent)>=1999): # the discord message limit is 2000
+            index = messageContent.rfind("\n", 0, 1999)
+            webhook = DiscordWebhook(url=webhookUrl, content=messageContent[0:index])
+            response = webhook.execute() #should check response code
+            messageContent = messageContent[index+1:len(messageContent)]
 
         webhook = DiscordWebhook(url=webhookUrl, content=messageContent)
         with open(chartOverview, "rb") as f: webhook.add_file(file=f.read(), filename=file_name + '_overview.png')
@@ -72,4 +78,6 @@ def sendJesseReportToDiscord(webhookUrl: str):
             with open(path, "rb") as f: webhook.add_file(file=f.read(), filename=file_name + '.' + types)
 
         response = webhook.execute()
+        
+        
         plt.close()
