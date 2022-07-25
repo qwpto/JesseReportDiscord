@@ -12,7 +12,7 @@ import jesse.services.metrics as stats
 import git
 
 import pandas as pd
-
+import os
 from matplotlib import pyplot as plt
 
 # from jesse.strategies import Strategy
@@ -71,13 +71,42 @@ def sendJesseReportToDiscord(webhookUrl: str):
             messageContent = messageContent[index+1:len(messageContent)]
 
         webhook = DiscordWebhook(url=webhookUrl, content=messageContent)
+        attachmentSize = 0
         with open(chartOverview, "rb") as f: webhook.add_file(file=f.read(), filename=file_name + '_overview.png')
+        attachmentSize += os.path.getsize(chartOverview)
+
         with open(quantStats, "rb") as f: webhook.add_file(file=f.read(), filename=file_name + '_quantstats.html')
-
+        attachmentSize += os.path.getsize(quantStats)
+        
+        discordSizeLimit = 7999000 #discord file limit 8MB
         for types, path in logs_path.items():
-            with open(path, "rb") as f: webhook.add_file(file=f.read(), filename=file_name + '.' + types)
-
-        response = webhook.execute()
+            if(os.path.getsize(path) > discordSizeLimit):
+                #file is too big to attach in one piece
+                file_number = 1
+                with open(path) as f:
+                    chunk = f.read(discordSizeLimit)
+                    while chunk:
+                        with open(path + str(file_number)) as chunk_file:
+                            chunk_file.write(chunk)
+                        file_number += 1
+                        chunk = f.read(discordSizeLimit)
+                        if((attachmentSize + os.path.getsize(path + str(file_number))) > discordSizeLimit):
+                            response = webhook.execute()
+                            webhook = DiscordWebhook(url=webhookUrl, content='')
+                            attachmentSize = 0
+                            
+                        with open(path + str(file_number), "rb") as f: webhook.add_file(file=f.read(), filename=file_name + '_' + file_number + '.' + types)
+                        attachmentSize += os.path.getsize(path + str(file_number))
+            else:
+                if((attachmentSize + os.path.getsize(path)) > discordSizeLimit):
+                    response = webhook.execute()
+                    webhook = DiscordWebhook(url=webhookUrl, content='')
+                    attachmentSize = 0
+                    
+                with open(path, "rb") as f: webhook.add_file(file=f.read(), filename=file_name + '.' + types)
+                attachmentSize += os.path.getsize(path)
+        if(attachmentSize > 0):
+            response = webhook.execute()
         
         
         plt.close()
