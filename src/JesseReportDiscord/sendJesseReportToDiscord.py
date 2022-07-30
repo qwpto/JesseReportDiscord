@@ -106,7 +106,7 @@ def sendJesseReportToDiscord(webhookUrl: str, customFiles={}):
                                 response = webhook.execute()
                                 webhook = DiscordWebhook(url=webhookUrl, content='')
                                 attachmentSize = 0                                
-                            with open(path + str(file_number), "rb") as f2: webhook.add_file(file=f2.read(), filename=file_name + '_' + str(file_number) + '.' + types)
+                            with open(path + str(file_number), "rb") as f2: webhook.add_file(file=f2.read(), filename=file_name + '.' + types + str(file_number))
                             attachmentSize += os.path.getsize(path + str(file_number))
                             file_number += 1
                 else:
