@@ -15,16 +15,21 @@ import pandas as pd
 import os
 from matplotlib import pyplot as plt
 
+import zipfile
+from os.path import basename
+
 # from jesse.strategies import Strategy
 
 
-def sendJesseReportToDiscord(webhookUrl: str):
+def sendJesseReportToDiscord(webhookUrl: str, customFiles={}):
     if(config["app"]["trading_mode"] == 'backtest'):
         if store.completed_trades.count > 0:
             messageContent = ""
 
             generate_json = generate_tradingview = generate_csv = True
             logs_path = store_logs(generate_json, generate_tradingview, generate_csv)
+            if(len(customFiles)>0):
+                logs_path.update(customFiles)
             file_name = jh.get_session_id()
             studyname = backtest_mode._get_study_name()
             chartOverview = charts.portfolio_vs_asset_returns(studyname)
@@ -82,22 +87,28 @@ def sendJesseReportToDiscord(webhookUrl: str):
             discordSizeLimit = 7999000 #discord file limit 8MB
             for types, path in logs_path.items():
                 if(os.path.getsize(path) > discordSizeLimit):
+                    #zip the file up
+                    with zipfile.ZipFile(path + '.zip', 'w', zipfile.ZIP_DEFLATED) as zipObj2:
+                      zipObj2.write(path, basename(path))
+                      path = path + '.zip'
+                      types = types + '.zip'
+
+                if(os.path.getsize(path) > discordSizeLimit):#still too big after zipping it
                     #file is too big to attach in one piece
                     file_number = 1
-                    with open(path) as f:
+                    with open(path, "rb") as f:
                         chunk = f.read(discordSizeLimit)
                         while chunk:
-                            with open(path + str(file_number)) as chunk_file:
-                                chunk_file.write(chunk)
-                            file_number += 1
+                            with open(path + str(file_number), 'wb') as chunk_file:
+                                chunk_file.write(chunk)                            
                             chunk = f.read(discordSizeLimit)
                             if((attachmentSize + os.path.getsize(path + str(file_number))) > discordSizeLimit):
                                 response = webhook.execute()
                                 webhook = DiscordWebhook(url=webhookUrl, content='')
-                                attachmentSize = 0
-                                
-                            with open(path + str(file_number), "rb") as f: webhook.add_file(file=f.read(), filename=file_name + '_' + file_number + '.' + types)
+                                attachmentSize = 0                                
+                            with open(path + str(file_number), "rb") as f2: webhook.add_file(file=f2.read(), filename=file_name + '_' + str(file_number) + '.' + types)
                             attachmentSize += os.path.getsize(path + str(file_number))
+                            file_number += 1
                 else:
                     if((attachmentSize + os.path.getsize(path)) > discordSizeLimit):
                         response = webhook.execute()
