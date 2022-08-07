@@ -2,7 +2,7 @@
 
 Post the results of backtests to a discord channel using a webhook.
 
-![alt text](https://github.com/qwpto/JesseReportDiscord/blob/release/example1.png?raw=true)
+![example](https://github.com/qwpto/JesseReportDiscord/blob/release/example1.png?raw=true)
 
 The library is published on pypi here: https://pypi.org/project/JesseReportDiscord/
 
