@@ -50,3 +50,6 @@ Users can add any number of additonal reports with a second argument passed as a
 JesseReportDiscord.sendJesseReportToDiscord('http://mydiscordgeneratedwebhook', {'tvreport.html':'relative/path/to/custom/report.html'})
 ```
 Don't use the in built indexes which are 'json', 'html', 'tradingview', 'csv' unless you want to overwrite those.
+
+CHANGELOG
+1.0.11, remove quantstats report for versions 0.39 and above due to new candle management changes in jesse 0.39.+

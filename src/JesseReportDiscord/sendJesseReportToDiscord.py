@@ -18,6 +18,9 @@ from matplotlib import pyplot as plt
 import zipfile
 from os.path import basename
 
+from packaging import version
+from jesse.version import __version__ as jesse_version
+
 # from jesse.strategies import Strategy
 
 
@@ -35,10 +38,11 @@ def sendJesseReportToDiscord(webhookUrl: str, customFiles={}):
             chartOverview = charts.portfolio_vs_asset_returns(studyname)
             plt.close()
 
-            start_date = datetime.fromtimestamp(store.app.starting_time / 1000)
-            date_list = [start_date + timedelta(days=x) for x in range(len(store.app.daily_balance))]
-            fullCandles = backtest_mode.load_candles(date_list[0].strftime('%Y-%m-%d'), date_list[-1].strftime('%Y-%m-%d'))
-            quantStats = backtest_mode._generate_quantstats_report(fullCandles)
+            if(version.parse(jesse_version) < version.parse("0.39.0")):
+                start_date = datetime.fromtimestamp(store.app.starting_time / 1000)
+                date_list = [start_date + timedelta(days=x) for x in range(len(store.app.daily_balance))]
+                fullCandles = backtest_mode.load_candles(date_list[0].strftime('%Y-%m-%d'), date_list[-1].strftime('%Y-%m-%d'))
+                quantStats = backtest_mode._generate_quantstats_report(fullCandles)
 
             messageContent += studyname + "\n"
 
@@ -81,8 +85,9 @@ def sendJesseReportToDiscord(webhookUrl: str, customFiles={}):
             with open(chartOverview, "rb") as f: webhook.add_file(file=f.read(), filename=file_name + '_overview.png')
             attachmentSize += os.path.getsize(chartOverview)
 
-            with open(quantStats, "rb") as f: webhook.add_file(file=f.read(), filename=file_name + '_quantstats.html')
-            attachmentSize += os.path.getsize(quantStats)
+            if(version.parse(jesse_version) < version.parse("0.39.0")):
+                with open(quantStats, "rb") as f: webhook.add_file(file=f.read(), filename=file_name + '_quantstats.html')
+                attachmentSize += os.path.getsize(quantStats)
             
             discordSizeLimit = 7999000 #discord file limit 8MB
             for types, path in logs_path.items():
