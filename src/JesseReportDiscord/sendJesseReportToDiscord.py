@@ -25,7 +25,7 @@ from jesse.version import __version__ as jesse_version
 
 
 def sendJesseReportToDiscord(webhookUrl: str, customFiles={}):
-    if(config["app"]["trading_mode"] == 'backtest'):
+    if(True):#config["app"]["trading_mode"] == 'backtest'):
         if store.completed_trades.count > 0:
             messageContent = ""
 

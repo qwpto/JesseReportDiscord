@@ -53,3 +53,4 @@ Don't use the in built indexes which are 'json', 'html', 'tradingview', 'csv' un
 
 CHANGELOG
 1.0.11, remove quantstats report for versions 0.39 and above due to new candle management changes in jesse 0.39.+
+1.1.0, support live trading
