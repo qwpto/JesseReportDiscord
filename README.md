@@ -51,6 +51,24 @@ JesseReportDiscord.sendJesseReportToDiscord('http://mydiscordgeneratedwebhook', 
 ```
 Don't use the in built indexes which are 'json', 'html', 'tradingview', 'csv' unless you want to overwrite those.
 
+Generation of data is controlled via the map config eg:
+```python
+myConfig = {'generate_json':True, generate_tradingview:False, generate_csv:False, generate_chart_overview:False, generate_quantstats_report:False, generate_version:False, generate_hyper_parameters:False, generate_portfolio_metrics:False, generate_study_name:False}
+JesseReportDiscord.sendJesseReportToDiscord('http://mydiscordgeneratedwebhook',config=myConfig)
+```
+or for this example more briefly:
+```python
+myConfig = {'generate_json':True, 'generate_none':True}
+JesseReportDiscord.sendJesseReportToDiscord('http://mydiscordgeneratedwebhook',config=myConfig)
+```
+
+Custom text can be posted with customMessage, so to only send a custom message to the channel:
+```python
+JesseReportDiscord.sendJesseReportToDiscord('http://mydiscordgeneratedwebhook', customMessage='hello', generation_config={'none':True} )
+```
+
+
 CHANGELOG
 1.0.11, remove quantstats report for versions 0.39 and above due to new candle management changes in jesse 0.39.+
 1.1.0, support live trading
+1.2.0, added config to control which info is posted, and customMessage.
