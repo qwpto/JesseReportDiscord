@@ -72,3 +72,4 @@ CHANGELOG
 1.0.11, remove quantstats report for versions 0.39 and above due to new candle management changes in jesse 0.39.+
 1.1.0, support live trading
 1.2.0, added config to control which info is posted, and customMessage.
+1.2.1, added timeouts to discord posts, and catching any exceptions to prevent disruptions to trading. Noted to be caused by discord rate limits.
